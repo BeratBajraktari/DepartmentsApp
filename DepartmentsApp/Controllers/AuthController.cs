@@ -24,10 +24,8 @@ namespace DepartmentsApp.Controllers
             var user = _userRepository.FindByUsername(username);
             if (user != null && VerifyPasswordHash(password, user.PasswordHash))
             {
-                // Vendosni emrin e përdoruesit në sesion
-                HttpContext.Session.SetString("Username", username); // Ruaj sesionin
+                HttpContext.Session.SetString("Username", username); 
 
-                // Ekuivalent i redirigimit në faqen kryesore pas login-it
                 return RedirectToAction("Index", "Departments");
             }
 
@@ -56,7 +54,6 @@ namespace DepartmentsApp.Controllers
 
         public IActionResult Logout()
         {
-            // Pastroni sesionin dhe bëj redirect në Login
             HttpContext.Session.Remove("Username");
             return RedirectToAction("Login");
         }
