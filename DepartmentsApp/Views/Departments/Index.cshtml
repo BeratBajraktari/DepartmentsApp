@@ -1,0 +1,103 @@
+﻿@model IEnumerable<Department>
+@using Kendo.Mvc.UI;
+
+@{
+    var isAuthenticated = ViewBag.IsAuthenticated as bool? ?? false;
+}
+
+<h1>Departments</h1>
+
+
+@(Html.Kendo().TreeList<Department>()
+    .Name("treelist")
+    .Toolbar(toolbar =>
+    {
+        if (isAuthenticated)
+        {
+            toolbar.Create();
+        }
+    })
+    .Columns(columns =>
+    {
+        columns.Add().Field(f => f.DepartmentName).Width(250).Title("Name");
+        if (isAuthenticated)
+        {
+            columns.Add().Width(500).Command(c =>
+            {
+                c.CreateChild().Text("Add child");
+                c.Edit();
+                c.Destroy();
+            });
+        }
+    })
+    .Editable(treeListEditing => treeListEditing.Mode(TreeListEditMode.InLine)) 
+    .DataSource(dataSource => dataSource
+        .Create(create => create.Action("Create", "Departments"))
+        .Read(read => read.Action("GetDepartments", "Departments"))
+        .Update(update => update.Action("Update", "Departments"))
+        .Destroy(delete => delete.Action("Destroy", "Departments"))
+        .Model(m =>
+        {
+            m.Id(f => f.DepartmentId); 
+            m.ParentId(f => f.ParentId).Nullable(true); 
+        })
+    )
+)
+
+
+<script>
+    $(document).ready(function () {
+                    $("#treelist").kendoTreeList({
+        dataSource: {
+            transport: {
+                read: { url: "/Departments/GetDepartments", dataType: "json" },
+                create: { url: "/Departments/GetDepartments", dataType: "json", type: "POST" },
+                update: { url: "/Departments/GetDepartments", dataType: "json", type: "POST" },
+                destroy: { url: "/Departments/GetDepartments", dataType: "json", type: "POST" }
+            },
+            schema: {
+                model: {
+                    id: "DepartmentId",          
+                    parentId: "ParentId",     
+                    fields: {
+                        DepartmentId: { type: "string", validation: { required: true } }
+                        
+                    }
+                }
+            }
+        },
+        editable: "inline",            
+        toolbar: [
+        { name: "create", text: "Add Parent" },  
+        {
+            name: "addChild",
+            text: "Add Child",
+            click: function () {
+                var treeList = $("#treelist").data("kendoTreeList");
+                var selectedRow = treeList.select(); 
+                if (selectedRow.length > 0) {
+                    var selectedDataItem = treeList.dataItem(selectedRow);
+
+                    
+                    treeList.addRow({
+                        ParentId: selectedDataItem.DepartmentId
+                    });
+                } else {
+                    alert("Please select a parent row first.");
+                }
+            }
+        }
+    ],
+
+        error: function (e) {
+            console.error("An error occurred:", e.errors);
+            alert("A problem occurred while processing the request.");
+        }
+    });
+
+            }
+
+
+</script>
+
+
