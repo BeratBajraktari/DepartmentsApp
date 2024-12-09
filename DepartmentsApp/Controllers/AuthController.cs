@@ -24,9 +24,10 @@ namespace DepartmentsApp.Controllers
             var user = _userRepository.FindByUsername(username);
             if (user != null && VerifyPasswordHash(password, user.PasswordHash))
             {
-                HttpContext.Session.SetString("Username", username); 
-
-                return RedirectToAction("Index", "Departments");
+                HttpContext.Session.SetString("Username", username);
+                ViewBag.IsAuthenticated = true;  
+                ViewBag.Username = username;     
+                return RedirectToAction("Index", "Home");
             }
 
             ViewBag.Error = "Invalid login credentials.";
@@ -55,6 +56,7 @@ namespace DepartmentsApp.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Remove("Username");
+            ViewBag.IsAuthenticated = false; 
             return RedirectToAction("Login");
         }
 

@@ -31,6 +31,8 @@ builder.Services.AddTransient<UserRepository>();
 
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
+builder.Services.AddScoped<INewsRepository, NewsRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

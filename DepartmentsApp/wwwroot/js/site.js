@@ -1,4 +1,8 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿function onErrorKendoGrid(e) {
+    if (e.status == "customerror") {
+        alert(e.errors);
+    }
+    else {
+        alert("Generic server error.");
+    }
+}

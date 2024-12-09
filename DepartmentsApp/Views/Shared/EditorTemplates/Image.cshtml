@@ -1,0 +1,14 @@
+﻿@model string
+
+@using Kendo.Mvc.UI
+
+@(Html.Kendo().Upload()
+    .Name("file")
+    .Async(a => a
+        .Save("SaveFile", "News")
+        .AutoUpload(true)
+    )
+    .Events(e => e.Success("onUploadSuccess"))
+)
+
+@Html.HiddenFor(m => m)

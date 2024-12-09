@@ -18,7 +18,7 @@ namespace DepartmentsApp.Controllers
         public IActionResult Index()
         {
             var isAuthenticated = HttpContext.Session.GetString("Username") != null;
-            ViewBag.IsAuthenticated = isAuthenticated;
+             ViewBag.IsAuthenticated = isAuthenticated;
 
             if (isAuthenticated)
             {

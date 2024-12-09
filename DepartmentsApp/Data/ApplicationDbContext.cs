@@ -16,5 +16,7 @@ namespace DepartmentsApp.Data
         public DbSet<Department> Departments { get; set; }
 
         public DbSet<User> Users { get; set; }
+
+        public DbSet<News> News { get; set; }
     }
 }

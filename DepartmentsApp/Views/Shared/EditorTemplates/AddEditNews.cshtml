@@ -1,0 +1,64 @@
+﻿@model DepartmentsApp.Models.News
+@using Kendo.Mvc.UI;
+
+<style>
+    .k-widget.k-window {
+        left: 20%;
+        right: 20%;
+    }
+
+    .k-edit-form-container {
+        width: auto;
+    }
+</style>
+
+<script>
+    function onSuccess(e) {
+        $("#ImageUrl").val(e.response).change();
+    }
+</script>
+
+<div class="mb-3">
+    @(Html.Kendo().TextBoxFor(m => m.NewsId)
+        .HtmlAttributes(new { style = "display: none" }))
+</div>
+
+
+<div class="mb-3">
+    <label for="Title" class="form-label">Title</label>
+    @(Html.Kendo().TextBoxFor(m => m.Title)
+        .HtmlAttributes(new { @class = "form-control", required = "required" }))
+</div>
+
+<div class="mb-3">
+    <label for="Content" class="form-label">Content</label>
+    @(Html.Kendo().EditorFor(m => m.Content)
+        .Tools(tools => tools
+        .Bold().Italic().Underline()
+        .JustifyLeft().JustifyCenter().JustifyRight()
+        .InsertImage().InsertFile())
+        .HtmlAttributes(new { style = "height: 300px;" }))
+</div>
+
+<div class="mb-3">
+    <label for="PublicationDate" class="form-label">Publication Date</label>
+    @(Html.Kendo().DateTimePickerFor(m => m.PublicationDate)
+        .HtmlAttributes(new { @class = "form-control", style = "width: auto;", required = "required" }))
+</div>
+
+<div class="mb-3">
+    <label for="Location" class="form-label">Location</label>
+    @(Html.Kendo().TextBoxFor(m => m.Location)
+        .HtmlAttributes(new { @class = "form-control", required = "required" }))
+</div>
+
+<div class="mb-3">
+    <label for="Photo" class="form-label">Upload Photo</label>
+    @(Html.Kendo().TextBoxFor(m => m.ImageUrl).HtmlAttributes(new { style = "display: none" }))
+    @(Html.Kendo().Upload()
+        .Name("file")
+        .Events(e => e.Success("onSuccess"))
+        .Async(a => a
+        .Save("SaveFile", "News")
+        .AutoUpload(true)))
+</div>

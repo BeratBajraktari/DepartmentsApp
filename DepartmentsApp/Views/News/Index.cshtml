@@ -1,0 +1,59 @@
+﻿@model IEnumerable<DepartmentsApp.Models.News>
+@using Kendo.Mvc.UI;
+
+<script>
+    function onEdit(e) {
+        var window = e.container.data('kendoWindow');
+
+        if (e.model.isNew()) {
+            window.title('Create');
+        } else {
+            window.title('Edit');
+        }
+    }
+</script>
+
+<h1>Lista e Lajmeve</h1>
+
+@(Html.Kendo().Grid<DepartmentsApp.Models.News>()
+    .Name("newsGrid")
+    .Columns(columns =>
+    {
+        columns.Bound(c => c.NewsId).Hidden();
+        columns.Bound(c => c.Title).Title("Title");
+        columns.Bound(c => c.PublicationDate).Title("Publication Date").Format("{0:yyyy-MM-dd}");
+        columns.Bound(c => c.Location).Title("Location");
+        columns.Bound(c => c.ImageUrl).Title("Image")
+            .ClientTemplate("<img src='#=ImageUrl#' alt='Image' style='width:50px;height:50px;' />");
+
+        if (ViewBag.IsAuthenticated == true)
+        {
+            columns.Command(command => { command.Edit(); command.Destroy(); }).Width(300);
+        }
+    })
+    .ToolBar(toolbar =>
+    {
+        if (ViewBag.IsAuthenticated == true)
+        {
+            toolbar.Create();
+        }
+    })
+    .Editable(editable => editable.Mode(GridEditMode.PopUp).TemplateName("AddEditNews"))
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Scrollable()
+    .Events(x => x.Edit("onEdit"))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(model =>
+        {
+            model.Id(c => c.NewsId);
+        })
+        .Events(e => e.Error("onErrorKendoGrid"))
+        .Read(read => read.Action("GetNews", "News"))
+        .Create(create => create.Action("CreateUpdate", "News"))
+        .Update(update => update.Action("CreateUpdate", "News"))
+        .Destroy(delete => delete.Action("Delete", "News"))
+    )
+)

@@ -15,8 +15,17 @@ namespace DepartmentsApp.Controllers
 
         public IActionResult Index()
         {
+            var isAuthenticated = HttpContext.Session.GetString("Username") != null;
+            ViewBag.IsAuthenticated = isAuthenticated;
+
+            if (isAuthenticated)
+            {
+                ViewBag.Username = HttpContext.Session.GetString("Username");
+            }
+
             return View();
         }
+
 
         public IActionResult Privacy()
         {
