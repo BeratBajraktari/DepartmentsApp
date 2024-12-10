@@ -1,8 +1,78 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IEnumerable<DepartmentsApp.Models.News>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .two-lines {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+        .pagination a {
+            text-decoration: none;
+            margin: 0 5px;
+            padding: 8px 16px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            color: #007bff;
+        }
+
+            .pagination a.active {
+                background-color: #007bff;
+                color: white;
+            }
+
+            .pagination a:hover {
+                background-color: #ddd;
+            }
+
+</style>
+
+<div class="text-center mb-4 mt-4">
+    <h2>Latest News</h2>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mt-4">
+                <div class="card" style="border-radius: 20px; overflow: hidden;">
+                    <img src="@item.ImageUrl" class="card-img-top" alt="@item.Title" style=" height: 200px; object-fit: cover;" />
+                    <div class="card-body mb-4 mt-2">
+                        <h5 class="card-title text-start two-lines">@item.Title</h5>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <p class="card-text mb-0">@item.PublicationDate.ToString("d")</p>
+                            <a asp-controller="Home" asp-action="Details" asp-route-id="@item.NewsId" class="btn btn-outline-primary">Read more</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        @if (ViewBag.CurrentPage > 1)
+        {
+            <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })">Previous</a>
+        }
+
+        @for (var i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <a href="@Url.Action("Index", new { page = i })" class="@(i == ViewBag.CurrentPage ? "active" : "")">@i</a>
+        }
+
+        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+        {
+            <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">Next</a>
+        }
+    </div>
 </div>

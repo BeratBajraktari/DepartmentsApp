@@ -1,19 +1,19 @@
-using System.Diagnostics;
 using DepartmentsApp.Models;
+using DepartmentsApp.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DepartmentsApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly INewsRepository _newsRepo;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(INewsRepository newsRepo)
         {
-            _logger = logger;
+            _newsRepo = newsRepo;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int page = 1)
         {
             var isAuthenticated = HttpContext.Session.GetString("Username") != null;
             ViewBag.IsAuthenticated = isAuthenticated;
@@ -23,19 +23,43 @@ namespace DepartmentsApp.Controllers
                 ViewBag.Username = HttpContext.Session.GetString("Username");
             }
 
-            return View();
+            int pageSize = 6;
+
+            var news = _newsRepo.GetNewsByPage(page, pageSize);
+
+            var totalNews = _newsRepo.GetAll().Count();
+            var totalPages = (int)Math.Ceiling(totalNews / (double)pageSize);
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            return View(news);
         }
 
 
-        public IActionResult Privacy()
+        public IActionResult Details(int id)
         {
-            return View();
-        }
+            var currentNews = _newsRepo.GetById(id);
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (currentNews == null)
+            {
+                return NotFound();
+            }
+
+            var lastNews = _newsRepo.GetLatestNewsExcludingCurrent(id);
+
+            ViewBag.LastNews = lastNews;
+
+            var isAuthenticated = HttpContext.Session.GetString("Username") != null;
+            ViewBag.IsAuthenticated = isAuthenticated;
+
+            if (isAuthenticated)
+            {
+                ViewBag.Username = HttpContext.Session.GetString("Username");
+            }
+
+            return View(currentNews);
         }
     }
+
 }

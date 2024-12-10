@@ -1,0 +1,67 @@
+﻿@model DepartmentsApp.Models.News
+
+@{
+    var lastNews = ViewBag.LastNews as IEnumerable<DepartmentsApp.Models.News>;
+}
+
+<style>
+    .two-lines {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="row gx-5 col-md-12" style="display: flex; justify-content: space-between; gap: 200px;">
+        <div class="col-md-7" style="flex: 1;">
+            <h3 class=" mb-5 text-center"><strong>@Model.Title</strong></h3>
+
+            <div class="text-center mb-5">
+                <img src="@Model.ImageUrl" alt="News Image" class="img-fluid rounded shadow-sm" style="max-width: 100%; height: auto;" />
+            </div>
+
+            <div class="mb-5">
+                <p>@Html.Raw(Model.Content)</p>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p><strong>Publication Date:</strong> @Model.PublicationDate.ToString("d")</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p><strong>Location:</strong> @Model.Location</p>
+                </div>
+            </div>
+            <div class="row mb-5">
+                <div class="col-md-12 text-end">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Back to news</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-4" style="flex: 0 0 30%;">
+            <h3 class="mb-5 text-center">Lastest News</h3>
+            <div class="row gap-y-5">
+                @foreach (var item in lastNews)
+                {
+                    <div class="col-12 mb-5">
+                        <div class="card" style="border-radius: 15px; overflow: hidden;">
+                            <img src="@item.ImageUrl" class="card-img-top" alt="@item.Title" style="height: 150px; object-fit: cover;" />
+                            <div class="card-body">
+                                <h5 class="card-title text-start two-lines">@item.Title</h5>
+                                <div class="d-flex justify-content-between align-items-center mt-4">
+                                    <p class="card-text mb-0">@item.PublicationDate.ToString("d")</p>
+                                    <a href="@Url.Action("Details", "Home", new { id = item.NewsId })" class="btn btn-outline-primary btn-sm">Read more</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

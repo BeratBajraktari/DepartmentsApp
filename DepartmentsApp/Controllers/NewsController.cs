@@ -34,9 +34,6 @@ namespace DepartmentsApp.Controllers
         }
 
 
-
-
-
         public IActionResult GetNews([DataSourceRequest] DataSourceRequest request)
         {
             var news = _newsRepository.GetAll();  

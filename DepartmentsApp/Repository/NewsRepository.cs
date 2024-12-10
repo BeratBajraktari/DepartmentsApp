@@ -50,5 +50,27 @@ namespace DepartmentsApp.Repository
             _db.Execute(sql, news);
             return news;
         }
+
+        public List<News> GetLatestNewsExcludingCurrent(int currentNewsId)
+        {
+            var sql = @"SELECT TOP 3 * FROM News WHERE NewsId != @NewsId ORDER BY PublicationDate DESC";
+
+            return _db.Query<News>(sql, new { NewsId = currentNewsId }).ToList();
+        }
+
+        public List<News> GetNewsByPage(int pageNumber, int pageSize)
+        {
+            var offset = (pageNumber - 1) * pageSize;
+            var sql = @"
+        SELECT * 
+        FROM News 
+        ORDER BY PublicationDate DESC
+        OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+
+            return _db.Query<News>(sql, new { Offset = offset, PageSize = pageSize }).ToList();
+        }
+
+
+
     }
 }
