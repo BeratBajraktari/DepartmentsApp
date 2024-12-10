@@ -61,11 +61,7 @@ namespace DepartmentsApp.Repository
         public List<News> GetNewsByPage(int pageNumber, int pageSize)
         {
             var offset = (pageNumber - 1) * pageSize;
-            var sql = @"
-        SELECT * 
-        FROM News 
-        ORDER BY PublicationDate DESC
-        OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+            var sql = @"SELECT * FROM News ORDER BY PublicationDate DESC OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
 
             return _db.Query<News>(sql, new { Offset = offset, PageSize = pageSize }).ToList();
         }
